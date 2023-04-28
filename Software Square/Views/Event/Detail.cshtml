@@ -1,0 +1,109 @@
+﻿@model Software_Square.Models.Event
+
+@{
+    ViewData["Title"] = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class = "row">
+    @*First Column*@
+    <div class="col-sm-8">
+        <div class = "row">
+            <div class="col-sm-3"> <h6 id="dateTimer"></h6>  </div>
+            <div class = "col-sm-9"> <center><h1>@Model.Title</h1></center></div>
+        </div>
+        <p>@Model.Description</p>
+        @*div for image banner*@
+        <div>
+            <center>
+                  <img src="data:image/png;base64,@(Convert.ToBase64String(Model.EventBanner))" class="img-fluid rounded-start" alt="@Model.Title">
+            </center>
+        </div>
+        <a href="@Model.RegisterationLink" target="_blank">Register Now</a>
+       <h4>Sponsors Name</h4>
+        <ul>
+            @foreach(var sp in Model.eventSponsors)
+            {
+                <li>@sp.SponsorName</li>
+            }
+        </ul>
+
+    </div>
+    @*Second Column*@
+    <div class = "col-sm-4">
+        <a class="btn" style="background-color:#081f62; color: White;">Create Sub-Event</a>
+    </div>
+
+
+
+
+
+</div>
+
+<script>
+  var deadline = new Date("@Model.StartDate.ToString("MMM dd, yyyy HH:m:s")").getTime();  
+var x = setInterval(function() {
+var now = new Date().getTime();
+var t = deadline - now;
+var days = Math.floor(t / (1000 * 60 * 60 * 24));
+var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60));
+var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+var seconds = Math.floor((t % (1000 * 60)) / 1000);
+document.getElementById("dateTimer").innerHTML = days + "d " 
++ hours + "h " + minutes + "m " + seconds + "s ";
+    if (t < 0) {
+        clearInterval(x);
+        document.getElementById("dateTimer").innerHTML = "EXPIRED";
+    }
+}, 1000);
+</script>
+
+
+@*<h1>@Model.Title</h1>
+
+<div>
+    <h4>Event</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RegisterationLink)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.RegisterationLink)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EndDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EventBanner)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.EventBanner)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+*@
