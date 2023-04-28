@@ -11,7 +11,7 @@ namespace Software_Square.Controllers
     public class EventController : Controller
     {
         private readonly ApplicationDbContext _db;
-
+        public static int MainEveId = 0;
         public EventController(ApplicationDbContext db)
         {
             _db = db;
@@ -23,7 +23,7 @@ namespace Software_Square.Controllers
             {
 
                 var con = Configuration.getInstance().getConnection();
-                SqlCommand cmd = new SqlCommand("SELECT * FROM Event", con);
+                SqlCommand cmd = new SqlCommand("SELECT * FROM Event WHERE Id NOT IN (SELECT SubEventId FROM SubEvent)", con);
                 SqlDataReader reader = cmd.ExecuteReader();
                 while (reader.Read())
                 {
@@ -40,7 +40,6 @@ namespace Software_Square.Controllers
                     events.Add(eve);
                 }
                 reader.Close();
-
             }
             catch
             {
@@ -48,12 +47,14 @@ namespace Software_Square.Controllers
             }
             return View(events);
         }
-        public IActionResult Create()
+        public IActionResult Create(int id=0)
         {
+            MainEveId = id;
             Event eve = new Event();
             eve.eventSponsors.Add(new EventSponsor() { EventId = 0 });
             return View(eve);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create(Event e)
         {
@@ -86,6 +87,14 @@ namespace Software_Square.Controllers
                     cmd.Parameters.AddWithValue("@Id", s.EventId);
                     cmd.Parameters.AddWithValue("@SN", s.SponsorName);
                     cmd.ExecuteNonQuery();
+                }
+                if(MainEveId!=0)
+                {
+                    SubEvent sub = new SubEvent();
+                    sub.MainEventId = MainEveId;
+                    sub.SubEventId = e.Id;
+                    _db.SubEvent.Add(sub);
+                    await _db.SaveChangesAsync();
                 }
             }
             catch

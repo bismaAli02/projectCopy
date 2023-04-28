@@ -51,16 +51,17 @@ namespace Software_Square.Controllers
 			bookDonated.UserId = _userManager.GetUserId(HttpContext.User);
 			string fileName = bookDonated.book.FileName;
 			fileName = Path.GetFileName(fileName);
+			fileName = fileName.Replace(" ","");
 			string uploadFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\Books", fileName);
 			FileStream file = new FileStream(uploadFilePath, FileMode.Create);
 			bookDonated.book.CopyToAsync(file);
-			bookDonated.path = uploadFilePath;
+			bookDonated.path = "Books/"+fileName;
 			bookDonated.Status = GetStatus("Pending");
 			_db.BookDonated.Add(bookDonated);
 			await _db.SaveChangesAsync();
 
 
-			return View();
+			return RedirectToAction("Books");
 		}
 		[HttpGet]
 		public async Task<IActionResult> Books()

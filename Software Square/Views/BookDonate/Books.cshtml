@@ -43,8 +43,7 @@
 		{
 			@if (SignInManager.IsSignedIn(User))
 			{
-				@if (User.IsInRole(Roles.Admin.ToString()))
-				{
+				
 																																						<tr>
 																																						<td>
 							@Html.DisplayFor(modelItem => item.Title)
@@ -53,24 +52,27 @@
 							@Html.DisplayFor(modelItem => item.Description)
 						</td>	
 						<td>
-						<button type="button" onclick="BookDownload(@item.Title,@item.path)" class="btn" style="background-color:#081f62; color: White;">Download</button>
-						<button type="button" onclick="return alert();" class="btn" style="background-color:#081f62; color: White;">Download</button>
+							<button onclick="return BookDownload('@item.Title', '@item.path');" class="btn" style="background-color:#081f62; color: White;">Download</button>
 						</td>
-						<td>
-							@if (item.Status == approveId || item.Status == pendingId)
-							{
-								<a asp-action="StatusChange" asp-route-Id="@item.Id" asp-route-Status="@rejectId" class= "btn btn-danger" style="color: White;">Reject</a>
-							}
+						@if (User.IsInRole(Roles.Admin.ToString()))
+						{
+							<td>
+								@if (item.Status == approveId || item.Status == pendingId)
+								{
+									<a asp-action="StatusChange" asp-route-Id="@item.Id" asp-route-Status="@rejectId" class="btn btn-danger" style="color: White;">Reject</a>
+								}
 
-						</td>
-						<td>
-							@if (item.Status == rejectId || item.Status == pendingId)
-							{
-								<a asp-action="StatusChange" asp-route-Id="@item.Id" asp-route-Status="@approveId" class="btn" style="background-color:#081f62; color: White;">Approve</a>
-							}
-						</td>
+							</td>
+							<td>
+								@if (item.Status == rejectId || item.Status == pendingId)
+								{
+									<a asp-action="StatusChange" asp-route-Id="@item.Id" asp-route-Status="@approveId" class="btn" style="background-color:#081f62; color: White;">Approve</a>
+								}
+							</td>
+						}
+						
 						</tr>
-				}
+				
 			}
 			else if (item.Status == approveId)
 			{
@@ -82,9 +84,7 @@
 						@Html.DisplayFor(modelItem => item.Description)
 				</td>	
 				<td>
-						<button onclick="return BookDownload('@item.Title', '~/Books/ullman_the_complete_book.pdf');"  class="btn" style="background-color:#081f62; color: White;">Download</button>
-						@*<button onclick="BookDownload(@item.Title, @item.path)" class="btn" style="background-color:#081f62; color: White;">Download</button>*@
-						<button type="button" onclick="return alert();" class="btn" style="background-color:#081f62; color: White;">Download</button>
+						<button onclick="return BookDownload('@item.Title', '@item.path');"  class="btn" style="background-color:#081f62; color: White;">Download</button>
 				</td>
 				</tr>
 			}
@@ -97,17 +97,26 @@
 <script type="text/javascript" language="javascript">
 	
 	function BookDownload(fileName, fileUrl) {
+		var st = window.location.href;
+		var adr = st.substr(0, st.indexOf('BookDonate'));
+		//alert(adr);
+		//adr=adr+fileUrl;
+		adr=adr+fileUrl;
+		//alert(adr);
+
+
+		window.location=adr;
 		
-	alert("YD");
+	//alert("YD");
 	// Create a new anchor element to trigger the download
-	const downloadLink = document.createElement("a");
+	//const downloadLink = document.createElement("a");
 
 	// Set the href and download attributes to trigger the download
-	downloadLink.href = fileUrl;
-	downloadLink.download = fileName;
+	//downloadLink.href = fileUrl;
+	//downloadLink.download = fileName;
 
 	// Trigger the click event on the download link
-	downloadLink.click();
+	//downloadLink.click();
 }
 
 function getAlert (){
